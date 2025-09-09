@@ -48,8 +48,7 @@ if os.path.exists(py_dir):
             continue
         
         module_name = os.path.splitext(file)[0]
-        # 修复模块导入路径
-        module_path = f"py.{module_name}"
+        module_path = f"{__name__}.py.{module_name}"
         
         safe_import_module(module_path, file)
 else:
