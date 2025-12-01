@@ -55,21 +55,6 @@ class PD_imagesave_path:
                    custom_output_dir="", format="png", numberfront=True, separator="_", show_preview=True):
         """
         保存图像主方法
-        
-        参数：
-        - images: 图像数组
-        - filename_prefix: 文件名前缀，默认为"R"
-        - prompt: 提示词信息
-        - extra_pnginfo: 额外的PNG元数据信息
-        - custom_output_dir: 自定义输出目录路径
-        - format: 图像格式（png或jpg）
-        - numberfront: 数字位置（True=前面，False=后面）
-        - separator: 分隔符
-        - show_preview: 是否在前端显示预览图
-        
-        返回：
-        - 如果show_preview=True，返回包含图像预览信息的字典
-        - 如果show_preview=False，返回空字典（不显示预览图）
         """
         try:
             # 判断是否有自定义保存路径
@@ -77,7 +62,17 @@ class PD_imagesave_path:
                 # 没有自定义路径时，使用默认路径，并创建以文件名和日期为标识的子文件夹
                 date_str = datetime.now().strftime("%Y-%m-%d")  # 生成当前日期字符串
                 custom_output_dir = os.path.join(self.output_dir, f"{filename_prefix}_{date_str}")
-                os.makedirs(custom_output_dir, exist_ok=True)  # 创建目录，如果已存在则忽略
+            
+            # -------------------------------------------------------------------------
+            # [关键修改] 
+            # 无论路径是自动生成的，还是用户自定义填写的，都强制尝试创建文件夹
+            # exist_ok=True 表示如果文件夹已存在，不会报错，继续执行
+            # -------------------------------------------------------------------------
+            try:
+                os.makedirs(custom_output_dir, exist_ok=True)
+            except Exception as e:
+                print(f"创建目录失败: {custom_output_dir}, 错误: {e}")
+                # 如果创建目录失败，可能因为权限问题，但这通常会让后续保存步骤报错
             
             # 调用私有方法保存图像到自定义目录，获取保存结果
             results = self._save_images_to_dir(images, filename_prefix, prompt, extra_pnginfo, 
@@ -99,19 +94,6 @@ class PD_imagesave_path:
                            output_dir, format, numberfront, separator):
         """
         私有方法：将图像保存到指定目录
-        
-        参数：
-        - images: 图像数组
-        - filename_prefix: 文件名前缀
-        - prompt: 提示词信息
-        - extra_pnginfo: 额外PNG信息
-        - output_dir: 输出目录路径
-        - format: 图像格式（png或jpg）
-        - numberfront: 数字位置（True=前面，False=后面）
-        - separator: 分隔符
-        
-        返回：
-        - results: 保存结果列表
         """
         results = list()
         
@@ -190,17 +172,7 @@ class PD_imagesave_path:
     
     def _get_next_counter(self, output_dir, filename_prefix, extension, numberfront, separator):
         """
-        获取下一个可用的计数器值，从1开始递增直到找到未占用的数字
-        
-        Args:
-            output_dir (str): 输出目录
-            filename_prefix (str): 文件名前缀
-            extension (str): 文件扩展名
-            numberfront (bool): 数字是否在前面
-            separator (str): 分割符
-            
-        Returns:
-            int: 下一个可用的计数器值
+        获取下一个可用的计数器值
         """
         try:
             # 获取目录中的所有文件

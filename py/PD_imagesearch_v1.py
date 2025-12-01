@@ -4,6 +4,7 @@ import numpy as np
 from pathlib import Path
 from PIL import Image, ImageOps
 import folder_paths
+import unicodedata
 
 class PD_ImageSearch:
     """
@@ -64,12 +65,17 @@ class PD_ImageSearch:
             matching_image_files = []
             matching_txt_files = []
             
+            # 预处理搜索关键字：归一化并转小写
+            word_norm = unicodedata.normalize('NFKC', word).casefold()
+            
             try:
                 # 遍历文件夹中的所有文件
                 for file_path in input_folder.iterdir():
                     if file_path.is_file():
-                        # 检查文件名是否包含关键字
-                        if word.lower() in file_path.name.lower():
+                        # 归一化文件名并检查是否包含关键字
+                        file_name_norm = unicodedata.normalize('NFKC', file_path.name).casefold()
+                        
+                        if word_norm in file_name_norm:
                             # 检查文件扩展名
                             if file_path.suffix.lower() in supported_formats:
                                 matching_image_files.append(file_path)
