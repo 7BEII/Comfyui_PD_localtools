@@ -388,5 +388,5 @@ NODE_CLASS_MAPPINGS = {
 
 # 节点显示名称映射：定义在UI中显示的节点名称
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PD_SAVE_PATH2": "PD:SAVE_PATH_V2",
+    "PD_SAVE_PATH2": "PD: image save_V2",
 } 

@@ -225,6 +225,6 @@ NODE_CLASS_MAPPINGS = {
 
 # 节点显示名称映射：定义在UI中显示的节点名称
 NODE_DISPLAY_NAME_MAPPINGS = {
-    "PD_image_coversaver": "PD_IMAGE:COVER_SAVER",
+    "PD_image_coversaver": "PD: image save_cover save",
 }
 
