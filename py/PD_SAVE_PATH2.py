@@ -50,6 +50,7 @@ class PD_SAVE_PATH2:
                 "lossless_webp": ("BOOLEAN", {"default": False}),  # WebP是否无损
                 "embed_metadata": ("BOOLEAN", {"default": True}),  # 是否嵌入元数据
                 "overwrite_mode": (["false", "prefix_as_filename"], {"default": "false"}),  # 覆盖模式
+                "seed": ("INT", {"default": 0, "min": 0, "max": 0xffffffffffffffff}),  # 种子参数，用于强制重新运行
             },
             "hidden": {
                 "prompt": "PROMPT", 
@@ -62,9 +63,17 @@ class PD_SAVE_PATH2:
     OUTPUT_NODE = True  # 标识为输出节点
     CATEGORY = "PD/Image"  # 节点分类
 
+    @classmethod
+    def IS_CHANGED(cls, images, seed=0, **kwargs):
+        """
+        通过返回种子值来告诉 ComfyUI 节点是否发生变化。
+        如果种子设置为“随机”，每次运行种子都会变，从而强制节点重新执行。
+        """
+        return seed
+
     def save_images(self, images, name="T_", output_dir="", 
                    number_start=True, number_padding=1, filename_delimiter="_", extension="jpg", quality=100, optimize_image=True, lossless_webp=False,
-                   embed_metadata=True, overwrite_mode="false", prompt=None, extra_pnginfo=None):
+                   embed_metadata=True, overwrite_mode="false", seed=0, prompt=None, extra_pnginfo=None):
         """
         保存图像主方法
         
